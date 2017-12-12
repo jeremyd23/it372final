@@ -1,7 +1,9 @@
 package model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Form
 {
@@ -11,6 +13,7 @@ public class Form
     private String requestorName;
     private String priority;
     private String description;
+    private ArrayList<String> editedBy;
 
     //optional
     private String impact;
@@ -29,6 +32,12 @@ public class Form
         this.priority = priority;
         this.description = description;
 
+        impact = "";
+        estimatedEffort = 0;
+
+        editedBy = new ArrayList<>();
+        editedBy.add(requestorName);
+
         setStatus();
     }
 
@@ -38,17 +47,21 @@ public class Form
         {
             status = "DONE";
         }
-        else if(start != null)
-        {
-            status = "IN WORK";
-        }
         else if(accepted != null && rejected != null)
         {
             status = "ACCEPTED";
         }
+        else if(accepted != null && rejected != null && start != null)
+        {
+            status = "IN WORK";
+        }
         else if(rejected != null)
         {
             status = "REJECTED";
+        }
+        else if(start != null)
+        {
+            status = "IN WORK";
         }
         else if(accepted != null)
         {
@@ -88,6 +101,12 @@ public class Form
     public void setRequestorName(String requestorName)
     {
         this.requestorName = requestorName;
+    }
+
+    public String getLastEditedBy()
+    {
+        String name = editedBy.get(editedBy.size() - 1);
+        return name;
     }
 
     public String getPriority()
@@ -172,6 +191,18 @@ public class Form
     {
         this.complete = complete;
         setStatus();
+    }
+
+    public HashMap<Dates, LocalDate> getDates()
+    {
+        HashMap<Dates, LocalDate> dateAndType = new HashMap<>();
+
+        dateAndType.put(Dates.START, start);
+        dateAndType.put(Dates.ACCEPTED, accepted);
+        dateAndType.put(Dates.COMPLETE, complete);
+        dateAndType.put(Dates.REJECTED, rejected);
+
+        return dateAndType;
     }
 
     public String getStatus()

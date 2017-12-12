@@ -12,10 +12,12 @@ import javafx.scene.layout.VBox;
 import model.Dates;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 
 public class AddView
 {
     private static final String[] priorities = {"High", "Medium", "Low"};
+    private HashMap<Dates, LocalDate> dateAndType;
     private VBox viewbox;
     private HBox hBox;
     private GridPane leftPane;
@@ -24,13 +26,13 @@ public class AddView
     private String  requestorName;
     private TextArea impact;
     private ComboBox prioritySelect;
-    private LocalDate accepted;
-    private LocalDate rejected;
-    private LocalDate start;
-    private LocalDate complete;
+    private ComboBox effortSelect;
+    private Label warning;
 
     public AddView()
     {
+        dateAndType = new HashMap<>();
+
         viewbox = new VBox(10);
         viewbox.setAlignment(Pos.TOP_CENTER);
         viewbox.setMinWidth(550);
@@ -67,8 +69,9 @@ public class AddView
         hBox.getChildren().addAll(leftPane, rightPane);
 
         Button submit = getSubmit();
+        warning = new Label();
 
-        viewbox.getChildren().addAll(hBox, submit);
+        viewbox.getChildren().addAll(hBox, submit, warning);
     }
 
     private void setNameField()
@@ -119,10 +122,10 @@ public class AddView
         Label effortLabel = new Label("Estimated Effort: ");
         leftPane.add(effortLabel, 0, 6);
 
-        ComboBox effortSelect = new ComboBox();
+        effortSelect = new ComboBox();
         effortSelect.setPromptText("Effort Level");
 
-        for(int i = 1; i <= 20; i++)
+        for(int i = 0; i <= 20; i++)
         {
             effortSelect.getItems().add(i);
         }
@@ -145,34 +148,40 @@ public class AddView
         rightPane.add(box, 3, 2);
     }
 
-    private DatePicker setDateField(Enum<Dates> date)
+    private DatePicker setDateField(Dates date)
     {
         DatePicker datePicker = new DatePicker();
+        setDateAction(datePicker, date);
 
+        if(date == Dates.ACCEPTED)
+        {
+            dateAndType.put(Dates.ACCEPTED, datePicker.getValue());
+        }
+        else if(date == Dates.COMPLETE)
+        {
+            dateAndType.put(Dates.COMPLETE, datePicker.getValue());
+        }
+        else if(date == Dates.START)
+        {
+            dateAndType.put(Dates.START, datePicker.getValue());
+        }
+        else if(date == Dates.REJECTED)
+        {
+            dateAndType.put(Dates.REJECTED, datePicker.getValue());
+        }
+
+        return datePicker;
+    }
+
+    private void setDateAction(DatePicker datePicker, Dates date)
+    {
         datePicker.setOnAction(new EventHandler<ActionEvent>()
         {
             public void handle(ActionEvent event)
             {
-                if(date == Dates.ACCEPTED)
-                {
-                    accepted = datePicker.getValue();
-                }
-                else if(date == Dates.COMPLETE)
-                {
-                    complete = datePicker.getValue();
-                }
-                else if(date == Dates.START)
-                {
-                    start = datePicker.getValue();
-                }
-                else if(date == Dates.REJECTED)
-                {
-                    rejected = datePicker.getValue();
-                }
+                dateAndType.put(date, datePicker.getValue());
             }
         });
-
-        return datePicker;
     }
 
     public Button getSubmit()
@@ -185,13 +194,46 @@ public class AddView
             @Override
             public void handle(ActionEvent event)
             {
+                String message = "";
 
                 if(prioritySelect.getValue() != null)
                 {
                     if(description.getText().length() > 5)
                     {
+                        int id = Controller.getInstance().addForm(requestorName, prioritySelect.getValue().toString(),
+                                description.getText());
 
+                        if(dateAndType.size() > 0)
+                        {
+                            Controller.getInstance().updateDate(id, dateAndType);
+                        }
+
+                        if(impact.getText().length() > 0)
+                        {
+                            Controller.getInstance().updateImpact(id, impact.getText());
+                        }
+
+                        if(effortSelect.getValue() != null)
+                        {
+                            int effort = Integer.parseInt(effortSelect.getValue().toString());
+                            Controller.getInstance().updateEffort(id, effort);
+                        }
+
+                        ScenePane.getInstance().setCenterPane(new LogView().getView());
                     }
+                    else
+                    {
+                        message = message + "Please enter a description\n";
+                    }
+                }
+                else
+                {
+                    message = message + "Please select priority level\n";
+                }
+
+                if (message.length() > 0)
+                {
+                    warning.setText(message);
                 }
             }
         });

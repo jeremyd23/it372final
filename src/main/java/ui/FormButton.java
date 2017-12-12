@@ -5,6 +5,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import model.Form;
+
+import java.time.LocalDate;
 
 public class FormButton implements Comparable<FormButton>
 {
@@ -15,11 +18,28 @@ public class FormButton implements Comparable<FormButton>
 
     public FormButton(int index)
     {
-        String description = Controller.getInstance().getForm(index).getDescription();
-        String status = Controller.getInstance().getForm(index).getStatus();
+        Form form = Controller.getInstance().getForm(index);
+        String description = form.getDescription();
 
-        button = new Button(status + " " + description);
+        String status = form.getStatus();
+        int id = form.getId();
+        LocalDate submittedDate = form.getRequestDate();
+        String editedBy = form.getLastEditedBy();
+
+        String idLine = "ID: " + id;
+        idLine = String.format("%-120s", idLine);
+
+        String buttonText = idLine + "Submitted: " + submittedDate +
+                "\nStatus:  " + status +
+                "\nDescription: " + description.substring(0, Math.min(description.length(), 85)) + "..." +
+                "\nEdited By: " + editedBy;
+
+
+
+        button = new Button(buttonText);
         button.setPadding(new Insets(TOP_RIGHT_BOTTOM_LEFT_PADDING));
+        button.setPrefHeight(100);
+        button.setPrefWidth(550);
 
         button.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -29,6 +49,11 @@ public class FormButton implements Comparable<FormButton>
                 ScenePane.getInstance().setCenterPane(new FormView(index).getView());
             }
         });
+    }
+
+    public Button getButton()
+    {
+        return button;
     }
 
     @Override

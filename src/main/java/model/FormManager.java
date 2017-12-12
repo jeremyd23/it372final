@@ -11,28 +11,27 @@ public class FormManager
     public FormManager()
     {
         formsMap = new HashMap<>();
-        //forms = new ArrayList<>();
         counter = formsMap.size();
     }
 
-    public void addForm(String requestorName, String priority, String description)
+    public int addForm(String requestorName, String priority, String description)
     {
-        Form form = new Form(counter + 1, LocalDate.now(), requestorName, priority, description);
-        //forms.add(form);
+        int id = counter + 1;
+        Form form = new Form(id, LocalDate.now(), requestorName, priority, description);
         formsMap.put(form.getId(), form);
 
         counter++;
+
+        return id;
     }
 
     public void setImpact(int formId, String impact)
     {
-        //forms.get(formId).setImpact(impact);
         formsMap.get(formId).setImpact(impact);
     }
 
     public void setEstimatedEffort(int formId, int effort)
     {
-        //forms.get(formId).setEstimatedEffort(effort);
         formsMap.get(formId).setEstimatedEffort(effort);
     }
 
@@ -40,30 +39,21 @@ public class FormManager
     {
         if(dateType == Dates.START)
         {
-            //forms.get(formId).setStart(date);
             formsMap.get(formId).setStart(date);
         }
         else if(dateType == Dates.ACCEPTED)
         {
-            //forms.get(formId).setAccepted(date);
-            formsMap.get(formId).setStart(date);
+            formsMap.get(formId).setAccepted(date);
         }
         else if(dateType == Dates.REJECTED)
         {
-            //forms.get(formId).setRejected(date);
-            formsMap.get(formId).setStart(date);
+            formsMap.get(formId).setRejected(date);
         }
         else if(dateType == Dates.COMPLETE)
         {
-            //forms.get(formId).setComplete(date);
-            formsMap.get(formId).setStart(date);
+            formsMap.get(formId).setComplete(date);
         }
     }
-
-//    public ArrayList<Form> getForms()
-//    {
-//        return forms;
-//    }
 
     public Form getForm(int id)
     {

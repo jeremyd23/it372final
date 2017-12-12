@@ -14,7 +14,7 @@ public class ChangeRequestUI extends Application
     public void start(Stage stage)
     {
         Scene scene = assemble();
-        stage.setTitle("The Beaten Path");
+        stage.setTitle("Change Request Manager");
         stage.setScene(scene);
         stage.show();
     }

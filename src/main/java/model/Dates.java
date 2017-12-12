@@ -4,6 +4,6 @@ public enum Dates
 {
     START,
     ACCEPTED,
-    REJECTED,
-    COMPLETE
+    COMPLETE,
+    REJECTED
 }
