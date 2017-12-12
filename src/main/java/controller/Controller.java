@@ -93,8 +93,6 @@ public class Controller
         {
             manager.setDate(id, (Dates)date.getKey(), (LocalDate)date.getValue());
         }
-
-        System.out.println(manager.getForm(id).getDates());
     }
 
     public void updateImpact(int id, String impact)
