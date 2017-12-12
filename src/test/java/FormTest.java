@@ -19,8 +19,10 @@ public class FormTest
     @Test
     public void testAddingForm()
     {
+        //add new form
         Controller.getInstance().addForm("Jeremy Daker", "High", "Test of the form builder");
 
+        //check requester name, description and priority are stored
         assertTrue(Controller.getInstance().getForm(2).getRequestorName() == "Jeremy Daker");
         assertTrue(Controller.getInstance().getForm(2).getDescription() == "Test of the form builder");
         assertTrue(Controller.getInstance().getForm(2).getPriority() == "High");
@@ -33,8 +35,10 @@ public class FormTest
 
         Form form = Controller.getInstance().getForm(3);
 
+        //check ID was auto generated
         assertTrue(form.getId() == 3);
 
+        //check request date was auto generated
         assertTrue(form.getRequestDate().getDayOfMonth() == LocalDate.now().getDayOfMonth());
         assertTrue(form.getRequestDate().getMonth() == LocalDate.now().getMonth());
         assertTrue(form.getRequestDate().getYear() == LocalDate.now().getYear());
